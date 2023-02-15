@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: reactive-facade
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+
+feign:
+  circuitbreaker:
+    enabled: true
+
+server:
+  port: ${SERVER_PORT:8087}
+
+eureka:
+  client:
+    service-url:
+      default-zone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+jwt:
+  secret: spring

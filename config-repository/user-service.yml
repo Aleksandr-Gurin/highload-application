@@ -1,0 +1,27 @@
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5433}/${POSTGRES_DB:highload}?currentSchema=user_info
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:12345}
+  liquibase:
+    enabled: true
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5433}/${POSTGRES_DB:highload}?currentSchema=user_info
+    user: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:12345}
+    change-log: classpath:db/changelog/db.changelog-master.yml
+    default-schema: user_info
+
+jwt:
+  secret: spring
+  expiration: 3600000
+
+server:
+  port: 8084
+
+eureka:
+  client:
+    service-url:
+      default-zone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
