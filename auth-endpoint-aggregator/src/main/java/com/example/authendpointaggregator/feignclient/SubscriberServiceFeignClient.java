@@ -30,7 +30,8 @@ import java.util.UUID;
 public interface SubscriberServiceFeignClient {
 
     @GetMapping("/api/v1/ticket")
-    Page<SubscriptionResponse> getAllSubscriptions(@PageableDefault(size = 5) Pageable pageable);
+    Page<SubscriptionResponse> getAllSubscriptions(@RequestParam(defaultValue = "0") int page,
+                                                   @RequestParam(defaultValue = "5") int size);
 
     @GetMapping("/api/v1/ticket/{id}")
     SubscriptionResponse getSubscriptionById(@PathVariable UUID id);
@@ -45,7 +46,8 @@ public interface SubscriberServiceFeignClient {
     void deleteSubscription(@PathVariable UUID id);
 
     @GetMapping("/api/v1/ticket")
-    Page<TicketResponse> getAllTickets(@PageableDefault(size = 5) Pageable pageable);
+    Page<TicketResponse> getAllTickets(@RequestParam(defaultValue = "0") int page,
+                                       @RequestParam(defaultValue = "5") int size);
 
     @GetMapping("/api/v1/ticket/{id}")
     TicketResponse getTicketById(@PathVariable UUID id);
@@ -60,7 +62,8 @@ public interface SubscriberServiceFeignClient {
     void deleteTicket(@PathVariable UUID id);
 
     @GetMapping("/api/v1/user-playlist")
-    Page<UserPlaylistResponse> getAllUserPlaylists(@PageableDefault(size = 5) Pageable pageable);
+    Page<UserPlaylistResponse> getAllUserPlaylists(@RequestParam(defaultValue = "0") int page,
+                                                   @RequestParam(defaultValue = "5") int size);
 
     @GetMapping("/api/v1/user-playlist/{id}")
     UserPlaylistResponse getUserPlaylistById(@PathVariable UUID id);
@@ -76,7 +79,8 @@ public interface SubscriberServiceFeignClient {
 
     @GetMapping("/api/v1/user-subscription")
     Page<UserSubscriptionResponse> getAllUserSubscriptions(
-            @PageableDefault(size = 5) Pageable pageable,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
             @RequestParam UUID userId
     );
 

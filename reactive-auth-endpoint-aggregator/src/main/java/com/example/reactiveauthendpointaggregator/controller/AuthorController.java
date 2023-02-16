@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -30,8 +31,9 @@ public class AuthorController {
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
-    public Flux<AuthorResponse> getAllAuthors(@PageableDefault(size = 5) Pageable pageable) {
-        return authorClient.getAllAuthors(pageable);
+    public Flux<AuthorResponse> getAllAuthors(@RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "5") int size) {
+        return authorClient.getAllAuthors(page, size);
     }
 
     @GetMapping("/all-author")

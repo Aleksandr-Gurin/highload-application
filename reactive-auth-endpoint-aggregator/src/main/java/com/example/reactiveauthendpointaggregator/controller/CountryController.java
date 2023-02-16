@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -28,8 +29,9 @@ public class CountryController {
     private final AuthorServiceFeignClient authorClient;
 
     @GetMapping
-    public Flux<CountryResponse> getAllCountries(@PageableDefault(size = 5) Pageable pageable) {
-        return authorClient.getAllCountries(pageable);
+    public Flux<CountryResponse> getAllCountries(@RequestParam(defaultValue = "0") int page,
+                                                 @RequestParam(defaultValue = "5") int size) {
+        return authorClient.getAllCountries(page, size);
     }
 
     @GetMapping("/all-country")

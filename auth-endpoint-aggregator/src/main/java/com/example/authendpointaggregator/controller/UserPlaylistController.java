@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
@@ -29,8 +30,9 @@ public class UserPlaylistController {
     private final SubscriberServiceFeignClient subscriberServiceFeignClient;
 
     @GetMapping
-    public Page<UserPlaylistResponse> getAllUserPlaylists(@PageableDefault(size = 5) Pageable pageable) {
-        return subscriberServiceFeignClient.getAllUserPlaylists(pageable);
+    public Page<UserPlaylistResponse> getAllUserPlaylists(@RequestParam(defaultValue = "0") int page,
+                                                          @RequestParam(defaultValue = "5") int size) {
+        return subscriberServiceFeignClient.getAllUserPlaylists(page, size);
     }
 
     @GetMapping("/{id}")

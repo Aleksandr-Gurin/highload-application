@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -30,8 +31,9 @@ public class AudioController {
     private final AuthorServiceFeignClient authorClient;
 
     @GetMapping
-    public Flux<AudioResponse> getAllAudios(@PageableDefault(size = 5) Pageable pageable) {
-        return authorClient.getAllAudios(pageable);
+    public Flux<AudioResponse> getAllAudios(@RequestParam(defaultValue = "0") int page,
+                                            @RequestParam(defaultValue = "5") int size) {
+        return authorClient.getAllAudios(page, size);
     }
 
     @GetMapping("/all-audio")

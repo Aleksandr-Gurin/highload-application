@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
@@ -29,8 +30,9 @@ public class TicketController {
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
-    public Page<TicketResponse> getAllTickets(@PageableDefault(size = 5) Pageable pageable) {
-        return subscriberServiceFeignClient.getAllTickets(pageable);
+    public Page<TicketResponse> getAllTickets(@RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "5") int size) {
+        return subscriberServiceFeignClient.getAllTickets(page, size);
     }
 
     @GetMapping("/{id}")

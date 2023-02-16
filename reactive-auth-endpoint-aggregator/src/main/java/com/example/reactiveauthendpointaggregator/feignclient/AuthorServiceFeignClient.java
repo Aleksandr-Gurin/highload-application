@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import reactivefeign.spring.config.ReactiveFeignClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -33,7 +34,8 @@ import java.util.UUID;
 public interface AuthorServiceFeignClient {
 
     @GetMapping("/api/v1/audio")
-    Flux<AudioResponse> getAllAudios(@PageableDefault(size = 5) Pageable pageable);
+    Flux<AudioResponse> getAllAudios(@RequestParam(defaultValue = "0") int page,
+                                     @RequestParam(defaultValue = "5") int size);
 
     @GetMapping("/api/v1/audio/all-audio")
     Flux<AudioResponse> getAllAudios();
@@ -51,7 +53,8 @@ public interface AuthorServiceFeignClient {
     Mono<Void> deleteAudio(@PathVariable UUID id);
 
     @GetMapping("/api/v1/author")
-    Flux<AuthorResponse> getAllAuthors(@PageableDefault(size = 5) Pageable pageable);
+    Flux<AuthorResponse> getAllAuthors(@RequestParam(defaultValue = "0") int page,
+                                       @RequestParam(defaultValue = "5") int size);
 
     @GetMapping("/api/v1/author/all-author")
     Flux<AuthorResponse> getAllAuthors();
@@ -69,7 +72,8 @@ public interface AuthorServiceFeignClient {
     Mono<Void>  deleteAuthor(@PathVariable UUID id);
 
     @GetMapping("/api/v1/city")
-    Flux<CityResponse> getAllCities(@PageableDefault(size = 5) Pageable pageable);
+    Flux<CityResponse> getAllCities(@RequestParam(defaultValue = "0") int page,
+                                    @RequestParam(defaultValue = "5") int size);
 
     @GetMapping("/api/v1/city/all-city")
     Flux<CityResponse> getAllCities();
@@ -87,7 +91,8 @@ public interface AuthorServiceFeignClient {
     Mono<Void> deleteCity(@PathVariable UUID id);
 
     @GetMapping("/api/v1/concert")
-    Flux<ConcertResponse> getAllConcerts(@PageableDefault(size = 5) Pageable pageable);
+    Flux<ConcertResponse> getAllConcerts(@RequestParam(defaultValue = "0") int page,
+                                         @RequestParam(defaultValue = "5") int size);
 
     @GetMapping("/api/v1/concert/all-concert")
     Flux<ConcertResponse> getAllConcerts();
@@ -105,7 +110,8 @@ public interface AuthorServiceFeignClient {
     Mono<Void> deleteConcert(@PathVariable UUID id);
 
     @GetMapping("/api/v1/country")
-    Flux<CountryResponse> getAllCountries(@PageableDefault(size = 5) Pageable pageable);
+    Flux<CountryResponse> getAllCountries(@RequestParam(defaultValue = "0") int page,
+                                          @RequestParam(defaultValue = "5") int size);
 
     @GetMapping("/api/v1/country/all-country")
     Flux<CountryResponse> getAllCountries();

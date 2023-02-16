@@ -31,10 +31,11 @@ public class UserSubscriptionController {
 
     @GetMapping
     public Page<UserSubscriptionResponse> getAllUserSubscriptions(
-            @PageableDefault(size = 5) Pageable pageable,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
             @RequestParam UUID userId
     ) {
-        return subscriberServiceFeignClient.getAllUserSubscriptions(pageable, userId);
+        return subscriberServiceFeignClient.getAllUserSubscriptions(page, size, userId);
     }
 
     @GetMapping("/{id}")
