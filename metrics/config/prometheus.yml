@@ -1,0 +1,11 @@
+scrape_configs:
+  - job_name: 'microservices-monitoring-pushgateway'
+    scrape_interval: 5s
+    static_configs:
+      - targets:
+        - pushgateway:9091
+  - job_name: 'microservices-monitoring-cadvisor'
+    scrape_interval: 5s
+    static_configs:
+      - targets:
+        - cadvisor:8080

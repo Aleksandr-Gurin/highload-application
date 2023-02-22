@@ -1,0 +1,47 @@
+version: "3.7"
+
+services:
+  grafana:
+    image: grafana-custom
+    build: 'config/grafana'
+    container_name: grafana
+    depends_on:
+      - prometheus
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus:/prometheus
+
+  pushgateway:
+    image: prom/pushgateway
+    container_name: pushgateway
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    ports:
+      - "9091:9091"
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    ports:
+      - "8085:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+
+
