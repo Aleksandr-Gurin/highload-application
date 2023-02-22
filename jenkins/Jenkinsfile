@@ -1,0 +1,101 @@
+tag = "${env.BUILD_NUMBER}"
+git_clone_url = "https://github.com/Aleksandr-Gurin/highload-application"
+registry_host = "https://registry.hub.docker.com"
+
+def build(image_name, path) {
+    image = docker.build("aixoxs/${image_name}:${tag}", "-f ./${path}/Dockerfile ./${path}")
+    return image
+}
+
+def build_eureka_server() {
+    return build("eureka-server", "./eureka-server")
+}
+
+def build_config_server() {
+    return build("config-server", "./config-server")
+}
+
+def build_auth_facade() {
+    return build("auth-facade", "./auth-endpoint-aggregator")
+}
+
+def build_auth_reactive_facade() {
+    return build("auth-reactive-facade", "./reactive-auth-endpoint-aggregator")
+}
+
+def build_user_service() {
+    return build("user-service", "./user-service")
+}
+
+def build_author_service() {
+    return build("author-service", "./author-service")
+}
+
+def build_subscriber_service() {
+    return build("subscriber-service", "./subscriber-service")
+}
+
+def build_gateway_service() {
+    return build("gateway-service", "./gateway-service")
+}
+
+def push_image(image) {
+    docker.withRegistry('', 'dockerhub_aixoxs') {
+        image.push()
+        image.push("latest")
+    }
+}
+
+def deploy(image) {
+    sh "docker-compose -f docker-compose.yml pull ${image}"
+    sh "docker-compose -f docker-compose.yml up -d ${image}"
+}
+
+
+node {
+    git credentialsId: 'Aleksandr-Gurin_github', url: "${git_clone_url}", branch: 'jenkins'
+
+    def eureka
+    def config
+    def facade
+    def reactive_facade
+    def user
+    def subscriber
+    def author
+    def gateway
+
+    stage('Build') {
+        eureka = build_eureka_server()
+        config = build_config_server()
+        facade = build_auth_facade()
+        reactive_facade = build_auth_reactive_facade()
+        user = build_user_service()
+        subscriber = build_subscriber_service()
+        author = build_author_service()
+        gateway = build_gateway_service()
+    }
+    stage('Push') {
+        push_image(eureka)
+        push_image(config)
+        push_image(facade)
+        push_image(reactive_facade)
+        push_image(user)
+        push_image(subscriber)
+        push_image(author)
+        push_image(gateway)
+    }
+
+      if (currentBuild.currentResult == 'SUCCESS') {
+            stage('Deploy') {
+                deploy("eureka")
+                deploy("config")
+                deploy("facade")
+                deploy("reactive_facade")
+                deploy("user")
+                deploy("subscriber")
+                deploy("author")
+                deploy("gateway")
+            }
+        }
+
+}

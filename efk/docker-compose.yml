@@ -1,0 +1,58 @@
+version: '3.7'
+volumes:
+  elasticsearch_data:
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.2
+    container_name: elasticsearch
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      cluster.name: "docker-cluster"
+      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
+      discovery.type: single-node
+      xpack.security.enabled: false
+      #ELASTIC_PASSWORD: elastic
+    networks:
+      - elk
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.5.2
+    container_name: filebeat
+    command: filebeat -e -strict.perms=false
+    #volumnes mount depend on you OS ( Windows or Linux )
+    volumes:
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      # требуется для доступа к дополнительной информации о контейнерах
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+        # требуется для доступа ко всем журналам docker (только для чтения):
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    user: root
+    networks:
+      - elk
+    links:
+      - elasticsearch
+      - kibana
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.5.2
+    container_name: kibana
+    volumes:
+      - ./kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+    environment:
+      ELASTICSEARCH_PASSWORD: elastic
+    ports:
+      - "5601:5601"
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+    links:
+      - elasticsearch
+
+networks:
+  elk:
+    driver: bridge
