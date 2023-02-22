@@ -1,0 +1,103 @@
+{
+    "zabbix_export": {
+        "version": "6.2",
+        "date": "2022-12-08T00:05:18Z",
+        "host_groups": [
+            {
+                "uuid": "dc579cd7a1a34222933f24f52a68bcd8",
+                "name": "Linux servers"
+            }
+        ],
+        "hosts": [
+            {
+                "host": "Node explorer",
+                "name": "Node explorer",
+                "groups": [
+                    {
+                        "name": "Linux servers"
+                    }
+                ],
+                "items": [
+                    {
+                        "name": "node_hwmon_temp_celsius{chip=\"thermal_thermal_zone0\",sensor=\"temp0\"}",
+                        "type": "DEPENDENT",
+                        "key": "cpu_temp",
+                        "delay": "0",
+                        "preprocessing": [
+                            {
+                                "type": "PROMETHEUS_PATTERN",
+                                "parameters": [
+                                    "node_hwmon_temp_celsius{chip=\"thermal_thermal_zone0\",sensor=\"temp0\"}",
+                                    "value",
+                                    ""
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "master"
+                        },
+                        "triggers": [
+                            {
+                                "expression": "last(/Node explorer/cpu_temp)>60",
+                                "name": "CPU temp too high",
+                                "priority": "WARNING"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Node exporter",
+                        "type": "HTTP_AGENT",
+                        "key": "master",
+                        "delay": "5s",
+                        "history": "0",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "url": "http://172.17.0.1:9100/metrics"
+                    },
+                    {
+                        "name": "node_pressure_cpu_waiting_seconds_total",
+                        "type": "DEPENDENT",
+                        "key": "node_pressure_cpu_waiting_seconds_total",
+                        "delay": "0",
+                        "value_type": "FLOAT",
+                        "preprocessing": [
+                            {
+                                "type": "PROMETHEUS_PATTERN",
+                                "parameters": [
+                                    "node_pressure_cpu_waiting_seconds_total",
+                                    "value",
+                                    ""
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "master"
+                        }
+                    }
+                ],
+                "httptests": [
+                    {
+                        "name": "user-service healthcheck",
+                        "delay": "10s",
+                        "steps": [
+                            {
+                                "name": "check",
+                                "url": "http://172.17.0.1:8082actuator/health",
+                                "follow_redirects": "NO",
+                                "status_codes": "200"
+                            }
+                        ]
+                    }
+                ],
+                "inventory_mode": "DISABLED"
+            }
+        ],
+        "triggers": [
+            {
+                "expression": "last(/Node explorer/web.test.fail[user-service healthcheck])<>0",
+                "name": "user-service is down",
+                "priority": "HIGH"
+            }
+        ]
+    }
+}
