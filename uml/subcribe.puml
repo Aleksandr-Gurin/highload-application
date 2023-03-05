@@ -1,0 +1,22 @@
+@startuml
+participant frontend
+participant "subscriber-service"
+participant "author-service"
+database "Postgres"
+"frontend" -> "subscriber-service":Subscribe request
+"subscriber-service" -> "author-service":Check exist author
+"author-service" -> "Postgres": Check exist author
+alt "автора не существует"
+
+    "Postgres" --> "author-service":False
+    "author-service" --> "subscriber-service":False
+    "subscriber-service" -> "frontend":user has not subscribed to the author
+else "автор существует"
+
+    "Postgres" --> "author-service":True
+    "author-service" --> "subscriber-service":True
+    "subscriber-service" -> "Postgres":update user_subscriptions
+    "subscriber-service" -> frontend:user subscribed to the author
+
+end
+@enduml
